@@ -1,0 +1,1527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>🌿 Nick's Gut Healing Plan</title>
+<style>
+  :root {
+    --green: #3d8b5e;
+    --green-light: #e8f5ee;
+    --green-mid: #a8d5b5;
+    --amber: #e8a020;
+    --amber-light: #fef3dc;
+    --red: #d94f4f;
+    --red-light: #fdeaea;
+    --blue: #3b82f6;
+    --blue-light: #eff6ff;
+    --text: #1a2e1a;
+    --text-muted: #6b7b6b;
+    --border: #d4e8d4;
+    --card: #ffffff;
+    --bg: #f0f7f2;
+    --radius: 14px;
+    --shadow: 0 2px 12px rgba(0,0,0,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding-bottom: 80px;
+  }
+
+  /* Header */
+  .header {
+    background: linear-gradient(135deg, var(--green) 0%, #2d6e48 100%);
+    color: white;
+    padding: 20px 16px 16px;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.15);
+  }
+  .header h1 { font-size: 1.3rem; font-weight: 700; letter-spacing: -0.3px; }
+  .header p { font-size: 0.8rem; opacity: 0.85; margin-top: 3px; }
+
+  /* Week selector */
+  .week-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: white;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 73px;
+    z-index: 99;
+  }
+  .week-nav button {
+    background: var(--green-light);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 6px 14px;
+    font-size: 0.85rem;
+    color: var(--green);
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .week-nav button:hover { background: var(--green-mid); }
+  .week-nav .week-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  /* Tab bar */
+  .tabs {
+    display: flex;
+    background: white;
+    border-bottom: 2px solid var(--border);
+    overflow-x: auto;
+    scrollbar-width: none;
+    position: sticky;
+    top: 117px;
+    z-index: 98;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab {
+    flex: 1;
+    min-width: 70px;
+    padding: 10px 6px;
+    text-align: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .tab.active {
+    color: var(--green);
+    border-bottom-color: var(--green);
+    background: var(--green-light);
+  }
+  .tab .tab-icon { display: block; font-size: 1.1rem; margin-bottom: 2px; }
+
+  /* Main content */
+  .content { padding: 12px; }
+
+  /* Day card */
+  .day-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    margin-bottom: 14px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .day-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px;
+    background: linear-gradient(135deg, var(--green) 0%, #2d7a4e 100%);
+    color: white;
+    cursor: pointer;
+  }
+  .day-title { font-size: 1rem; font-weight: 700; }
+  .day-stats {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    font-size: 0.8rem;
+  }
+  .cal-badge {
+    background: rgba(255,255,255,0.2);
+    padding: 3px 8px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.75rem;
+  }
+  .cal-badge.over { background: rgba(217,79,79,0.6); }
+  .cal-badge.under { background: rgba(255,255,255,0.15); }
+  .progress-ring {
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+  }
+
+  /* Meal items */
+  .meals-container { padding: 0; }
+  .meal-item {
+    border-bottom: 1px solid var(--border);
+    padding: 12px 14px;
+    transition: background 0.15s;
+  }
+  .meal-item:last-child { border-bottom: none; }
+  .meal-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .meal-check {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    flex-shrink: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+    margin-top: 1px;
+    background: white;
+  }
+  .meal-check.eaten {
+    background: var(--green);
+    border-color: var(--green);
+    color: white;
+  }
+  .meal-check.subbed {
+    background: var(--amber);
+    border-color: var(--amber);
+    color: white;
+  }
+  .meal-check.missed {
+    background: var(--red);
+    border-color: var(--red);
+    color: white;
+  }
+  .meal-info { flex: 1; min-width: 0; }
+  .meal-type {
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    margin-bottom: 2px;
+  }
+  .meal-name {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.3;
+  }
+  .meal-cals {
+    font-size: 0.75rem;
+    color: var(--green);
+    font-weight: 600;
+    margin-top: 2px;
+  }
+  .meal-tags {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    margin-top: 5px;
+  }
+  .tag {
+    font-size: 0.6rem;
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+  .tag.fermented { background: #fce8f0; color: #c2366e; }
+  .tag.omega3 { background: #e8f0fe; color: #3b5fc2; }
+  .tag.fiber { background: #fef9e8; color: #a07020; }
+  .tag.prebiotic { background: #e8fef0; color: #206a35; }
+
+  .meal-actions {
+    display: flex;
+    gap: 6px;
+    margin-top: 8px;
+    padding-left: 34px;
+  }
+  .action-btn {
+    font-size: 0.7rem;
+    padding: 4px 10px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: white;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s;
+    color: var(--text-muted);
+  }
+  .action-btn:hover { background: var(--green-light); color: var(--green); border-color: var(--green-mid); }
+  .action-btn.active-eaten { background: var(--green-light); color: var(--green); border-color: var(--green); }
+  .action-btn.active-subbed { background: var(--amber-light); color: var(--amber); border-color: var(--amber); }
+  .action-btn.active-missed { background: var(--red-light); color: var(--red); border-color: var(--red); }
+
+  /* Ingredients expand */
+  .ingredients {
+    display: none;
+    padding: 6px 14px 8px 48px;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+    background: var(--bg);
+    border-top: 1px solid var(--border);
+  }
+  .ingredients.open { display: block; }
+  .ing-title { font-weight: 600; color: var(--text); margin-bottom: 2px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.4px; }
+
+  /* Notes section */
+  .notes-area {
+    padding: 10px 14px 14px;
+    background: var(--bg);
+    border-top: 1px solid var(--border);
+  }
+  .notes-area textarea {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 8px 10px;
+    font-size: 0.82rem;
+    font-family: inherit;
+    resize: none;
+    background: white;
+    color: var(--text);
+    min-height: 60px;
+    transition: border 0.2s;
+  }
+  .notes-area textarea:focus {
+    outline: none;
+    border-color: var(--green);
+  }
+  .notes-area textarea::placeholder { color: #aab8aa; }
+  .notes-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+
+  /* Day summary */
+  .day-summary {
+    display: flex;
+    gap: 8px;
+    padding: 10px 14px;
+    background: var(--green-light);
+    border-top: 1px solid var(--border);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .day-summary::-webkit-scrollbar { display: none; }
+  .summary-pill {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: white;
+    border-radius: 20px;
+    padding: 4px 10px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    white-space: nowrap;
+    border: 1px solid var(--border);
+  }
+
+  /* Progress page */
+  .progress-section { margin-bottom: 20px; }
+  .section-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .stat-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .stat-card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 14px;
+    text-align: center;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .stat-number {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--green);
+    line-height: 1;
+  }
+  .stat-label {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+    font-weight: 500;
+  }
+  .streak-fire { color: #e8600a; }
+
+  /* Weekly bar chart */
+  .week-chart {
+    background: white;
+    border-radius: var(--radius);
+    padding: 14px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    margin-bottom: 12px;
+  }
+  .chart-title {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+  .chart-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+    height: 80px;
+  }
+  .chart-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    justify-content: flex-end;
+    gap: 3px;
+  }
+  .chart-bar-wrap {
+    width: 100%;
+    background: var(--green-light);
+    border-radius: 4px 4px 0 0;
+    overflow: hidden;
+    min-height: 4px;
+    height: 70px;
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+  }
+  .chart-bar-fill {
+    width: 100%;
+    border-radius: 4px 4px 0 0;
+    transition: height 0.5s ease;
+    background: linear-gradient(180deg, var(--green) 0%, #2d7a4e 100%);
+  }
+  .chart-bar-fill.partial { background: linear-gradient(180deg, var(--amber) 0%, #c08018 100%); }
+  .chart-bar-fill.empty { background: var(--green-light); }
+  .chart-day-label {
+    font-size: 0.62rem;
+    font-weight: 700;
+    color: var(--text-muted);
+  }
+
+  /* Principles tracker */
+  .principles-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .principle-card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 12px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .principle-icon { font-size: 1.4rem; margin-bottom: 4px; }
+  .principle-name { font-size: 0.75rem; font-weight: 700; color: var(--text); }
+  .principle-count { font-size: 1.4rem; font-weight: 800; color: var(--green); }
+  .principle-sub { font-size: 0.65rem; color: var(--text-muted); }
+  .principle-bar-wrap {
+    height: 5px;
+    background: var(--green-light);
+    border-radius: 3px;
+    margin-top: 6px;
+    overflow: hidden;
+  }
+  .principle-bar {
+    height: 100%;
+    background: var(--green);
+    border-radius: 3px;
+    transition: width 0.5s;
+  }
+
+  /* Calendar view toggle */
+  .view-toggle {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .view-btn {
+    flex: 1;
+    padding: 8px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: white;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    color: var(--text-muted);
+    transition: all 0.2s;
+  }
+  .view-btn.active {
+    background: var(--green);
+    color: white;
+    border-color: var(--green);
+  }
+
+  /* Calendar overview */
+  .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    margin-bottom: 16px;
+  }
+  .cal-day {
+    background: white;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    padding: 6px 4px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  }
+  .cal-day:hover { background: var(--green-light); border-color: var(--green-mid); }
+  .cal-day.active-day { background: var(--green); color: white; border-color: var(--green); box-shadow: 0 3px 10px rgba(61,139,94,0.3); }
+  .cal-day .cd-name { font-size: 0.6rem; font-weight: 700; margin-bottom: 3px; }
+  .cal-day .cd-dots { display: flex; justify-content: center; gap: 2px; flex-wrap: wrap; }
+  .cal-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--border);
+  }
+  .cal-dot.eaten { background: var(--green); }
+  .cal-dot.subbed { background: var(--amber); }
+  .cal-dot.missed { background: var(--red); }
+
+  /* History list */
+  .history-item {
+    background: white;
+    border-radius: var(--radius);
+    padding: 12px 14px;
+    margin-bottom: 8px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .history-date { font-size: 0.85rem; font-weight: 700; color: var(--text); }
+  .history-stats { font-size: 0.75rem; color: var(--text-muted); margin-top: 3px; }
+  .history-note { font-size: 0.78rem; color: var(--text); margin-top: 6px; font-style: italic; border-left: 3px solid var(--green); padding-left: 8px; }
+
+  /* Empty state */
+  .empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-muted);
+  }
+  .empty-state .empty-icon { font-size: 3rem; margin-bottom: 10px; }
+  .empty-state p { font-size: 0.85rem; }
+
+  /* Bottom nav */
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    border-top: 1px solid var(--border);
+    display: flex;
+    z-index: 200;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+  }
+  .nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px 4px 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--text-muted);
+    font-size: 0.65rem;
+    font-weight: 600;
+    border-top: 3px solid transparent;
+  }
+  .nav-item.active {
+    color: var(--green);
+    border-top-color: var(--green);
+  }
+  .nav-icon { font-size: 1.3rem; margin-bottom: 2px; }
+
+  /* Modals / toasts */
+  .toast {
+    position: fixed;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1a2e1a;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    z-index: 500;
+    opacity: 0;
+    transition: opacity 0.3s;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+  .toast.show { opacity: 1; }
+
+  /* Gut score */
+  .gut-score {
+    background: linear-gradient(135deg, var(--green) 0%, #1d5c38 100%);
+    border-radius: var(--radius);
+    padding: 20px;
+    text-align: center;
+    color: white;
+    margin-bottom: 14px;
+    box-shadow: var(--shadow);
+  }
+  .gut-score-number {
+    font-size: 3.5rem;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .gut-score-label { font-size: 0.85rem; opacity: 0.85; }
+  .gut-score-sub { font-size: 0.75rem; opacity: 0.7; margin-top: 6px; }
+
+  /* Adherence badge */
+  .adherence-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    margin-top: 8px;
+  }
+  .adherence-badge.excellent { background: rgba(255,255,255,0.2); }
+  .adherence-badge.good { background: rgba(232,160,32,0.3); }
+  .adherence-badge.fair { background: rgba(217,79,79,0.3); }
+
+  /* Sub-note modal */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 400;
+    align-items: flex-end;
+    justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: white;
+    border-radius: var(--radius) var(--radius) 0 0;
+    padding: 20px 16px;
+    width: 100%;
+    max-width: 500px;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+  }
+  .modal-overlay.open .modal { transform: translateY(0); }
+  .modal h3 { font-size: 1rem; font-weight: 700; margin-bottom: 12px; }
+  .modal textarea {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 0.85rem;
+    font-family: inherit;
+    resize: none;
+    min-height: 80px;
+    color: var(--text);
+  }
+  .modal textarea:focus { outline: none; border-color: var(--green); }
+  .modal-btns {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+  }
+  .modal-btn {
+    flex: 1;
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    font-size: 0.88rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .modal-btn.primary { background: var(--green); color: white; }
+  .modal-btn.secondary { background: var(--green-light); color: var(--green); }
+
+  /* Responsive */
+  @media (min-width: 500px) {
+    .content { max-width: 500px; margin: 0 auto; }
+    .week-nav { justify-content: center; gap: 20px; }
+    .bottom-nav { max-width: 500px; left: 50%; transform: translateX(-50%); }
+    .toast { bottom: 90px; }
+  }
+
+  /* Animations */
+  @keyframes checkPop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.3); }
+    100% { transform: scale(1); }
+  }
+  .pop { animation: checkPop 0.3s ease; }
+
+  .hidden { display: none !important; }
+  .page { display: none; }
+  .page.active { display: block; }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <h1>🌿 Gut Healing Plan</h1>
+  <p>Nick's 7-Day Tracker</p>
+</div>
+
+<!-- Week navigation -->
+<div class="week-nav">
+  <button id="prevWeek">← Prev</button>
+  <span class="week-label" id="weekLabel">This Week</span>
+  <button id="nextWeek">Next →</button>
+</div>
+
+<!-- Tab bar (days) -->
+<div class="tabs" id="dayTabs"></div>
+
+<!-- Pages -->
+<div class="content">
+
+  <!-- Meal Plan Page -->
+  <div class="page active" id="pagePlan">
+    <div id="dayContent"></div>
+  </div>
+
+  <!-- Progress Page -->
+  <div class="page" id="pageProgress">
+    <div class="gut-score" id="gutScoreCard">
+      <div class="gut-score-number" id="gutScoreNum">--</div>
+      <div class="gut-score-label">Weekly Adherence Score</div>
+      <div class="adherence-badge excellent" id="adherenceBadge">Loading...</div>
+      <div class="gut-score-sub" id="gutScoreSub">Calculating...</div>
+    </div>
+
+    <div class="stat-grid" id="statGrid"></div>
+
+    <div class="week-chart">
+      <div class="chart-title">📊 Daily Adherence This Week</div>
+      <div class="chart-bars" id="weekChart"></div>
+    </div>
+
+    <div class="progress-section">
+      <div class="section-title">🧬 Gut-Healing Principles (This Week)</div>
+      <div class="principles-grid" id="principlesGrid"></div>
+    </div>
+
+    <div class="progress-section">
+      <div class="section-title">📅 Calendar Overview</div>
+      <div class="calendar-grid" id="calendarGrid"></div>
+    </div>
+
+    <div class="progress-section">
+      <div class="section-title">📓 Daily Notes</div>
+      <div id="notesList"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Bottom Nav -->
+<div class="bottom-nav">
+  <div class="nav-item active" id="navPlan" onclick="showPage('plan')">
+    <span class="nav-icon">🥗</span>Plan
+  </div>
+  <div class="nav-item" id="navProgress" onclick="showPage('progress')">
+    <span class="nav-icon">📈</span>Progress
+  </div>
+</div>
+
+<!-- Sub modal -->
+<div class="modal-overlay" id="subModal">
+  <div class="modal">
+    <h3 id="subModalTitle">What did you eat instead?</h3>
+    <textarea id="subModalInput" placeholder="Describe what you had..." rows="3"></textarea>
+    <div class="modal-btns">
+      <button class="modal-btn secondary" onclick="closeSubModal()">Cancel</button>
+      <button class="modal-btn primary" onclick="saveSubstitution()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ============================================================
+// MEAL PLAN DATA
+// ============================================================
+const MEAL_PLAN = {
+  Monday: {
+    meals: [
+      {
+        type: 'Breakfast',
+        name: 'Sardines on rye toast + sliced avocado',
+        calories: 420,
+        ingredients: ['1 can sardines', 'rye toast (2 slices)', '½ avocado', 'lemon juice', 'black pepper', 'sea salt'],
+        principles: ['omega3', 'fiber']
+      },
+      {
+        type: 'Lunch',
+        name: 'Greek yogurt bowl',
+        calories: 380,
+        ingredients: ['plain full-fat Greek yogurt (1 cup)', 'cucumber (sliced)', 'fresh dill', 'lemon juice', 'walnuts (handful)'],
+        principles: ['fermented', 'prebiotic']
+      },
+      {
+        type: 'Dinner',
+        name: 'Miso soup with tofu, seaweed & scallions + brown rice',
+        calories: 420,
+        ingredients: ['miso paste (2 tbsp)', 'silken tofu', 'dried seaweed', 'scallions', 'brown rice (¾ cup cooked)', 'dashi or vegetable broth'],
+        principles: ['fermented', 'prebiotic', 'fiber']
+      },
+      {
+        type: 'Snack',
+        name: '1 can sardines + kimchi',
+        calories: 220,
+        ingredients: ['1 can sardines', 'kimchi (¼ cup)'],
+        principles: ['fermented', 'omega3', 'prebiotic']
+      }
+    ],
+    target: 1440
+  },
+  Tuesday: {
+    meals: [
+      {
+        type: 'Breakfast',
+        name: 'Kefir smoothie',
+        calories: 380,
+        ingredients: ['kefir (1 cup)', '1 banana', '1 tbsp flaxseed', 'frozen berries (½ cup)'],
+        principles: ['fermented', 'fiber', 'prebiotic']
+      },
+      {
+        type: 'Lunch',
+        name: 'Sardine & white bean salad',
+        calories: 430,
+        ingredients: ['1 can sardines', 'cannellini beans (½ cup)', 'arugula (2 cups)', 'lemon juice', '1 tbsp olive oil', 'salt & pepper'],
+        principles: ['omega3', 'fiber', 'prebiotic']
+      },
+      {
+        type: 'Dinner',
+        name: 'Baked salmon over roasted asparagus + quinoa',
+        calories: 490,
+        ingredients: ['salmon fillet (6 oz)', 'asparagus (1 bunch)', 'quinoa (¾ cup cooked)', 'lemon', 'olive oil', 'garlic', 'herbs'],
+        principles: ['omega3', 'fiber', 'prebiotic']
+      },
+      {
+        type: 'Snack',
+        name: 'Apple + 2 tbsp almond butter',
+        calories: 210,
+        ingredients: ['1 medium apple', 'almond butter (2 tbsp)'],
+        principles: ['fiber', 'prebiotic']
+      }
+    ],
+    target: 1510
+  },
+  Wednesday: {
+    meals: [
+      {
+        type: 'Breakfast',
+        name: 'Overnight oats',
+        calories: 400,
+        ingredients: ['rolled oats (½ cup)', 'chia seeds (1 tbsp)', 'kefir (½ cup)', 'blueberries (½ cup)', 'honey (drizzle)'],
+        principles: ['fermented', 'fiber', 'prebiotic']
+      },
+      {
+        type: 'Lunch',
+        name: 'Nori wraps',
+        calories: 440,
+        ingredients: ['1 can sardines', 'nori sheets (4)', 'brown rice (½ cup)', 'avocado (½)', 'cucumber', 'sesame seeds', 'soy sauce'],
+        principles: ['omega3', 'fiber']
+      },
+      {
+        type: 'Dinner',
+        name: 'Lentil & spinach soup + sourdough slice',
+        calories: 450,
+        ingredients: ['lentils (½ cup dry)', 'spinach (2 cups)', 'tomatoes (1 can)', 'onion', 'garlic', 'cumin', 'sourdough slice'],
+        principles: ['fermented', 'fiber', 'prebiotic']
+      },
+      {
+        type: 'Snack',
+        name: 'Plain Greek yogurt + honey + walnuts',
+        calories: 200,
+        ingredients: ['Greek yogurt (½ cup)', 'honey (1 tsp)', 'walnuts (handful)'],
+        principles: ['fermented', 'prebiotic']
+      }
+    ],
+    target: 1490
+  },
+  Thursday: {
+    meals: [
+      {
+        type: 'Breakfast',
+        name: 'Sardines on rye toast + sauerkraut + soft-boiled egg',
+        calories: 430,
+        ingredients: ['1 can sardines', 'rye toast (2 slices)', 'sauerkraut (¼ cup)', '1 egg (soft-boiled)', 'black pepper'],
+        principles: ['fermented', 'omega3', 'prebiotic', 'fiber']
+      },
+      {
+        type: 'Lunch',
+        name: 'Tempeh taco bowl',
+        calories: 410,
+        ingredients: ['tempeh (4 oz)', 'black beans (½ cup)', 'salsa (3 tbsp)', 'shredded cabbage (1 cup)', 'lime juice', 'cumin', 'smoked paprika'],
+        principles: ['fermented', 'fiber', 'prebiotic']
+      },
+      {
+        type: 'Dinner',
+        name: 'Baked cod with roasted root vegetables + miso glaze',
+        calories: 470,
+        ingredients: ['cod fillet (6 oz)', 'miso paste (1 tbsp)', 'carrots', 'parsnips', 'sweet potato', 'olive oil', 'herbs', 'honey'],
+        principles: ['fermented', 'fiber', 'prebiotic']
+      },
+      {
+        type: 'Snack',
+        name: 'Edamame + sea salt',
+        calories: 190,
+        ingredients: ['edamame (1 cup shelled)', 'sea salt'],
+        principles: ['fiber', 'prebiotic']
+      }
+    ],
+    target: 1500
+  },
+  Friday: {
+    meals: [
+      {
+        type: 'Breakfast',
+        name: 'Kefir parfait',
+        calories: 390,
+        ingredients: ['kefir (¾ cup)', 'low-sugar granola (¼ cup)', 'mixed berries (½ cup)', '1 tbsp flaxseed'],
+        principles: ['fermented', 'fiber', 'prebiotic']
+      },
+      {
+        type: 'Lunch',
+        name: 'Sardine niçoise',
+        calories: 450,
+        ingredients: ['1 can sardines', 'green beans (1 cup)', '1 boiled egg', 'olives (¼ cup)', 'cherry tomatoes', 'Dijon dressing', 'mixed greens'],
+        principles: ['omega3', 'fiber']
+      },
+      {
+        type: 'Dinner',
+        name: 'Shrimp stir-fry with brown rice',
+        calories: 480,
+        ingredients: ['shrimp (5 oz)', 'bok choy (2 cups)', 'snap peas (1 cup)', 'ginger (1 inch)', 'tamari (2 tbsp)', 'sesame oil', 'brown rice (¾ cup cooked)'],
+        principles: ['omega3', 'fiber', 'prebiotic']
+      },
+      {
+        type: 'Snack',
+        name: '1 can sardines + cucumber slices + hot sauce',
+        calories: 215,
+        ingredients: ['1 can sardines', 'cucumber (1 cup sliced)', 'hot sauce'],
+        principles: ['omega3']
+      }
+    ],
+    target: 1535
+  },
+  Saturday: {
+    meals: [
+      {
+        type: 'Breakfast',
+        name: 'Smoked salmon & scrambled eggs + sautéed spinach',
+        calories: 430,
+        ingredients: ['smoked salmon (3 oz)', '3 eggs (scrambled)', 'spinach (2 cups)', 'olive oil', 'capers (optional)', 'black pepper'],
+        principles: ['omega3', 'prebiotic']
+      },
+      {
+        type: 'Lunch',
+        name: 'Miso-glazed tofu bowl',
+        calories: 440,
+        ingredients: ['firm tofu (6 oz)', 'miso paste (1 tbsp)', 'edamame (½ cup)', 'shredded carrots', 'sesame seeds', 'brown rice (½ cup cooked)', 'scallions'],
+        principles: ['fermented', 'fiber', 'prebiotic']
+      },
+      {
+        type: 'Dinner',
+        name: 'Baked trout with lemon-herb crust + roasted broccoli + sweet potato',
+        calories: 490,
+        ingredients: ['trout fillet (6 oz)', 'lemon zest', 'fresh herbs (parsley, dill)', 'breadcrumbs (2 tbsp)', 'broccoli (1 cup)', 'sweet potato (1 medium)', 'olive oil'],
+        principles: ['omega3', 'fiber', 'prebiotic']
+      },
+      {
+        type: 'Snack',
+        name: 'Kombucha + mixed nuts',
+        calories: 200,
+        ingredients: ['kombucha (12 oz)', 'mixed nuts (¼ cup)'],
+        principles: ['fermented', 'prebiotic']
+      }
+    ],
+    target: 1560
+  },
+  Sunday: {
+    meals: [
+      {
+        type: 'Breakfast',
+        name: 'Chia pudding',
+        calories: 380,
+        ingredients: ['chia seeds (3 tbsp)', 'coconut milk (1 cup)', 'mango (½ cup diced)', 'toasted coconut flakes (2 tbsp)', 'honey (drizzle)'],
+        principles: ['fiber', 'prebiotic']
+      },
+      {
+        type: 'Lunch',
+        name: 'Sardine grain bowl',
+        calories: 450,
+        ingredients: ['1 can sardines', 'farro (½ cup cooked)', 'roasted beets (½ cup)', 'arugula (2 cups)', 'tahini dressing (2 tbsp)', 'lemon', 'salt'],
+        principles: ['omega3', 'fiber', 'prebiotic']
+      },
+      {
+        type: 'Dinner',
+        name: 'White bean & kale stew with miso broth + sourdough',
+        calories: 450,
+        ingredients: ['white beans (½ cup)', 'kale (2 cups)', 'miso paste (1 tbsp)', 'vegetable broth (2 cups)', 'onion', 'garlic', 'olive oil', 'sourdough (1 slice)'],
+        principles: ['fermented', 'fiber', 'prebiotic']
+      },
+      {
+        type: 'Snack',
+        name: 'Greek yogurt + sliced strawberries + chia seeds',
+        calories: 180,
+        ingredients: ['Greek yogurt (½ cup)', 'strawberries (½ cup sliced)', 'chia seeds (1 tsp)'],
+        principles: ['fermented', 'fiber']
+      }
+    ],
+    target: 1460
+  }
+};
+
+const DAYS = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+const DAY_SHORT = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+const MEAL_ICONS = { Breakfast: '🌅', Lunch: '☀️', Dinner: '🌙', Snack: '🍎' };
+const PRINCIPLE_INFO = {
+  fermented: { label: 'Fermented', icon: '🫙', desc: 'yogurt, kefir, miso, kimchi, sauerkraut', target: 14 },
+  omega3:    { label: 'Omega-3', icon: '🐟', desc: 'sardines, salmon, trout, shrimp', target: 14 },
+  fiber:     { label: 'Fiber', icon: '🌾', desc: 'oats, beans, lentils, vegetables', target: 14 },
+  prebiotic: { label: 'Prebiotic', icon: '🌿', desc: 'garlic, onion, asparagus, banana', target: 14 }
+};
+
+// ============================================================
+// STATE
+// ============================================================
+let currentWeekOffset = 0;
+let currentDayIndex = 0;
+let currentPage = 'plan';
+let pendingSubstitution = null; // { weekKey, day, mealIndex }
+
+function getWeekStartDate(offset = 0) {
+  const now = new Date();
+  const dayOfWeek = now.getDay(); // 0=Sun
+  const monday = new Date(now);
+  monday.setDate(now.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1) + (offset * 7));
+  monday.setHours(0,0,0,0);
+  return monday;
+}
+
+function getWeekKey(offset = 0) {
+  const d = getWeekStartDate(offset);
+  return `week_${d.getFullYear()}_${d.getMonth()}_${d.getDate()}`;
+}
+
+function formatWeekLabel(offset) {
+  if (offset === 0) return 'This Week';
+  if (offset === -1) return 'Last Week';
+  if (offset === 1) return 'Next Week';
+  const d = getWeekStartDate(offset);
+  return `Week of ${d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
+}
+
+function getStorage(key) {
+  try { return JSON.parse(localStorage.getItem(key) || '{}'); } catch { return {}; }
+}
+
+function setStorage(key, val) {
+  localStorage.setItem(key, JSON.stringify(val));
+}
+
+function getWeekData(offset = currentWeekOffset) {
+  return getStorage(getWeekKey(offset));
+}
+
+function setWeekData(data, offset = currentWeekOffset) {
+  setStorage(getWeekKey(offset), data);
+}
+
+// ============================================================
+// RENDER
+// ============================================================
+function init() {
+  // Set current day
+  const today = new Date().getDay();
+  currentDayIndex = today === 0 ? 6 : today - 1; // Mon=0
+
+  renderDayTabs();
+  renderDayContent();
+  renderProgress();
+  updateWeekLabel();
+
+  document.getElementById('prevWeek').onclick = () => {
+    currentWeekOffset--;
+    currentDayIndex = 0;
+    renderDayTabs();
+    renderDayContent();
+    renderProgress();
+    updateWeekLabel();
+  };
+  document.getElementById('nextWeek').onclick = () => {
+    currentWeekOffset++;
+    currentDayIndex = 0;
+    renderDayTabs();
+    renderDayContent();
+    renderProgress();
+    updateWeekLabel();
+  };
+}
+
+function updateWeekLabel() {
+  document.getElementById('weekLabel').textContent = formatWeekLabel(currentWeekOffset);
+}
+
+function renderDayTabs() {
+  const tabs = document.getElementById('dayTabs');
+  const data = getWeekData();
+  tabs.innerHTML = DAYS.map((day, i) => {
+    const dayData = data[day] || {};
+    const meals = MEAL_PLAN[day].meals;
+    const eaten = meals.filter((_, mi) => dayData[`meal_${mi}`] === 'eaten').length;
+    const isToday = i === currentDayIndex && currentWeekOffset === 0;
+    return `<div class="tab ${i === currentDayIndex ? 'active' : ''}" onclick="switchDay(${i})">
+      <span class="tab-icon">${isToday ? '📍' : DAY_SHORT[i][0] === 'S' && i === 5 ? '🌴' : i === 6 ? '☀️' : '📅'}</span>
+      ${DAY_SHORT[i]}
+    </div>`;
+  }).join('');
+}
+
+function switchDay(idx) {
+  currentDayIndex = idx;
+  renderDayTabs();
+  renderDayContent();
+}
+
+function renderDayContent() {
+  const day = DAYS[currentDayIndex];
+  const dayPlan = MEAL_PLAN[day];
+  const data = getWeekData();
+  const dayData = data[day] || {};
+  const isToday = currentDayIndex === (new Date().getDay() === 0 ? 6 : new Date().getDay() - 1) && currentWeekOffset === 0;
+
+  let eatenCals = 0;
+  let eatenCount = 0;
+  let subbedCount = 0;
+  let missedCount = 0;
+
+  dayPlan.meals.forEach((meal, i) => {
+    const status = dayData[`meal_${i}`];
+    if (status === 'eaten') { eatenCals += meal.calories; eatenCount++; }
+    else if (status === 'subbed') { eatenCals += meal.calories; subbedCount++; } // approximate
+    else if (status === 'missed') { missedCount++; }
+  });
+
+  const calPct = Math.round((eatenCals / dayPlan.target) * 100);
+  const calDiff = eatenCals - dayPlan.target;
+
+  // Principle counts for this day
+  const principleMap = { fermented: 0, omega3: 0, fiber: 0, prebiotic: 0 };
+  dayPlan.meals.forEach((meal, i) => {
+    const status = dayData[`meal_${i}`];
+    if (status === 'eaten' || status === 'subbed') {
+      meal.principles.forEach(p => principleMap[p]++);
+    }
+  });
+
+  const html = `
+    <div class="day-card">
+      <div class="day-header" onclick="toggleNotes('${day}')">
+        <div>
+          <div class="day-title">${isToday ? '📍 ' : ''}${day}</div>
+          <div style="font-size:0.72rem;opacity:0.8;margin-top:2px;">${eatenCount + subbedCount}/${dayPlan.meals.length} meals · ${eatenCals || 0} / ${dayPlan.target} cal</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div class="cal-badge ${calDiff > 50 ? 'over' : ''}">${calPct}%</div>
+          <svg class="progress-ring" viewBox="0 0 32 32">
+            <circle cx="16" cy="16" r="12" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="3"/>
+            <circle cx="16" cy="16" r="12" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="3"
+              stroke-dasharray="${Math.min(75.4 * calPct / 100, 75.4)} 75.4"
+              stroke-linecap="round" transform="rotate(-90 16 16)"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="meals-container">
+        ${dayPlan.meals.map((meal, i) => renderMealItem(day, meal, i, dayData)).join('')}
+      </div>
+
+      <div class="day-summary">
+        ${Object.entries(principleMap).map(([p, count]) =>
+          `<div class="summary-pill">${PRINCIPLE_INFO[p].icon} ${PRINCIPLE_INFO[p].label}: ${count}</div>`
+        ).join('')}
+      </div>
+
+      <div class="notes-area" id="notes_${day.replace(/\s/g,'_')}">
+        <div class="notes-label">📝 How did you feel today?</div>
+        <textarea
+          placeholder="Energy levels, digestion, mood, notes..."
+          oninput="saveNote('${day}', this.value)"
+        >${dayData.note || ''}</textarea>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('dayContent').innerHTML = html;
+}
+
+function renderMealItem(day, meal, i, dayData) {
+  const status = dayData[`meal_${i}`] || '';
+  const subNote = dayData[`sub_${i}`] || '';
+  const checkEmoji = status === 'eaten' ? '✓' : status === 'subbed' ? '~' : status === 'missed' ? '✗' : '';
+
+  return `
+    <div class="meal-item" id="meal_${day.replace(/\s/g,'_')}_${i}">
+      <div class="meal-row">
+        <div class="meal-check ${status}" id="check_${day.replace(/\s/g,'_')}_${i}" onclick="cycleStatus('${day}', ${i})">
+          ${checkEmoji}
+        </div>
+        <div class="meal-info">
+          <div class="meal-type">${MEAL_ICONS[meal.type]} ${meal.type}</div>
+          <div class="meal-name" style="${status === 'missed' ? 'text-decoration:line-through;opacity:0.5;' : ''}">${meal.name}</div>
+          <div class="meal-cals">~${meal.calories} cal</div>
+          <div class="meal-tags">
+            ${meal.principles.map(p => `<span class="tag ${p}">${PRINCIPLE_INFO[p].icon} ${PRINCIPLE_INFO[p].label}</span>`).join('')}
+          </div>
+          ${subNote ? `<div style="font-size:0.75rem;color:var(--amber);margin-top:4px;font-style:italic;">🔄 ${subNote}</div>` : ''}
+        </div>
+      </div>
+      <div class="meal-actions">
+        <button class="action-btn ${status === 'eaten' ? 'active-eaten' : ''}" onclick="setStatus('${day}', ${i}, 'eaten')">✓ Eaten</button>
+        <button class="action-btn ${status === 'subbed' ? 'active-subbed' : ''}" onclick="openSubModal('${day}', ${i})">🔄 Substituted</button>
+        <button class="action-btn ${status === 'missed' ? 'active-missed' : ''}" onclick="setStatus('${day}', ${i}, 'missed')">✗ Missed</button>
+        <button class="action-btn" onclick="toggleIngredients('ing_${day.replace(/\s/g,'_')}_${i}')">📋</button>
+      </div>
+      <div class="ingredients" id="ing_${day.replace(/\s/g,'_')}_${i}">
+        <div class="ing-title">Ingredients:</div>
+        ${meal.ingredients.join(' · ')}
+      </div>
+    </div>
+  `;
+}
+
+function toggleIngredients(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.toggle('open');
+}
+
+function toggleNotes(day) {
+  // Already always visible — header click does nothing special
+}
+
+function cycleStatus(day, mealIdx) {
+  const data = getWeekData();
+  const dayData = data[day] || {};
+  const key = `meal_${mealIdx}`;
+  const current = dayData[key] || '';
+  const cycle = ['', 'eaten', 'missed', ''];
+  const next = cycle[(cycle.indexOf(current) + 1) % cycle.length];
+  dayData[key] = next;
+  data[day] = dayData;
+  setWeekData(data);
+
+  // Pop animation
+  const check = document.getElementById(`check_${day.replace(/\s/g,'_')}_${mealIdx}`);
+  if (check) { check.classList.add('pop'); setTimeout(() => check.classList.remove('pop'), 300); }
+
+  if (next === 'eaten') showToast('✅ Meal logged as eaten!');
+  else if (next === 'missed') showToast('❌ Meal marked as missed');
+  else showToast('⭕ Meal status cleared');
+
+  renderDayContent();
+  if (currentPage === 'progress') renderProgress();
+}
+
+function setStatus(day, mealIdx, status) {
+  const data = getWeekData();
+  const dayData = data[day] || {};
+  const key = `meal_${mealIdx}`;
+  if (dayData[key] === status) {
+    // Toggle off
+    dayData[key] = '';
+    showToast('⭕ Status cleared');
+  } else {
+    dayData[key] = status;
+    if (status === 'eaten') showToast('✅ Logged as eaten!');
+    else if (status === 'missed') showToast('❌ Marked as missed');
+  }
+  data[day] = dayData;
+  setWeekData(data);
+  renderDayContent();
+  if (currentPage === 'progress') renderProgress();
+}
+
+function openSubModal(day, mealIdx) {
+  const data = getWeekData();
+  const dayData = data[day] || {};
+  pendingSubstitution = { day, mealIdx };
+  document.getElementById('subModalInput').value = dayData[`sub_${mealIdx}`] || '';
+  const meal = MEAL_PLAN[day].meals[mealIdx];
+  document.getElementById('subModalTitle').textContent = `What did you have instead of "${meal.type.toLowerCase()}"?`;
+  document.getElementById('subModal').classList.add('open');
+}
+
+function closeSubModal() {
+  document.getElementById('subModal').classList.remove('open');
+  pendingSubstitution = null;
+}
+
+function saveSubstitution() {
+  if (!pendingSubstitution) return;
+  const { day, mealIdx } = pendingSubstitution;
+  const subNote = document.getElementById('subModalInput').value.trim();
+  const data = getWeekData();
+  const dayData = data[day] || {};
+  dayData[`meal_${mealIdx}`] = 'subbed';
+  dayData[`sub_${mealIdx}`] = subNote;
+  data[day] = dayData;
+  setWeekData(data);
+  closeSubModal();
+  showToast('🔄 Substitution saved!');
+  renderDayContent();
+  if (currentPage === 'progress') renderProgress();
+}
+
+function saveNote(day, text) {
+  const data = getWeekData();
+  const dayData = data[day] || {};
+  dayData.note = text;
+  data[day] = dayData;
+  setWeekData(data);
+  // Debounce progress re-render
+  clearTimeout(window._noteTimer);
+  window._noteTimer = setTimeout(() => {
+    if (currentPage === 'progress') renderProgress();
+  }, 800);
+}
+
+// ============================================================
+// PROGRESS PAGE
+// ============================================================
+function renderProgress() {
+  const data = getWeekData();
+  let totalMeals = 0;
+  let eatenTotal = 0;
+  let subbedTotal = 0;
+  let missedTotal = 0;
+  let dayAdherence = [];
+  const principles = { fermented: 0, omega3: 0, fiber: 0, prebiotic: 0 };
+  let totalPossible = 0;
+
+  DAYS.forEach(day => {
+    const dayData = data[day] || {};
+    const meals = MEAL_PLAN[day].meals;
+    let dayEaten = 0;
+    meals.forEach((meal, i) => {
+      totalMeals++;
+      totalPossible += meal.principles.length;
+      const status = dayData[`meal_${i}`];
+      if (status === 'eaten') {
+        eatenTotal++;
+        dayEaten++;
+        meal.principles.forEach(p => principles[p]++);
+      } else if (status === 'subbed') {
+        subbedTotal++;
+        dayEaten += 0.5; // partial credit
+      } else if (status === 'missed') {
+        missedTotal++;
+      }
+    });
+    dayAdherence.push(dayEaten / meals.length);
+  });
+
+  const adherencePct = totalMeals > 0 ? Math.round(((eatenTotal + subbedTotal * 0.5) / totalMeals) * 100) : 0;
+  const score = adherencePct;
+  const scoreEl = document.getElementById('gutScoreNum');
+  if (scoreEl) scoreEl.textContent = `${score}%`;
+
+  const badge = document.getElementById('adherenceBadge');
+  if (badge) {
+    if (score >= 80) { badge.textContent = '🌟 Excellent'; badge.className = 'adherence-badge excellent'; }
+    else if (score >= 60) { badge.textContent = '👍 Good Progress'; badge.className = 'adherence-badge good'; }
+    else { badge.textContent = '💪 Keep Going'; badge.className = 'adherence-badge fair'; }
+  }
+
+  const sub = document.getElementById('gutScoreSub');
+  if (sub) sub.textContent = `${eatenTotal} eaten · ${subbedTotal} substituted · ${missedTotal} missed`;
+
+  // Stat grid
+  const statGrid = document.getElementById('statGrid');
+  if (statGrid) {
+    statGrid.innerHTML = `
+      <div class="stat-card">
+        <div class="stat-number" style="color:var(--green)">${eatenTotal}</div>
+        <div class="stat-label">✅ Meals Eaten</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" style="color:var(--amber)">${subbedTotal}</div>
+        <div class="stat-label">🔄 Substituted</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" style="color:var(--red)">${missedTotal}</div>
+        <div class="stat-label">❌ Missed</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number stat-streak">${getStreak()}</div>
+        <div class="stat-label">🔥 Day Streak</div>
+      </div>
+    `;
+  }
+
+  // Week chart
+  const chart = document.getElementById('weekChart');
+  if (chart) {
+    chart.innerHTML = DAYS.map((day, i) => {
+      const pct = dayAdherence[i];
+      const h = Math.round(pct * 60);
+      const cls = pct === 0 ? 'empty' : pct < 0.7 ? 'partial' : '';
+      return `<div class="chart-col">
+        <div class="chart-bar-wrap">
+          <div class="chart-bar-fill ${cls}" style="height:${h}px"></div>
+        </div>
+        <div class="chart-day-label">${DAY_SHORT[i]}</div>
+      </div>`;
+    }).join('');
+  }
+
+  // Principles grid
+  const pg = document.getElementById('principlesGrid');
+  if (pg) {
+    pg.innerHTML = Object.entries(PRINCIPLE_INFO).map(([key, info]) => {
+      const count = principles[key];
+      const maxPossible = totalMeals > 0 ? Math.round(totalMeals / 2) : 14; // rough max
+      const pct = Math.min((count / Math.max(maxPossible, 1)) * 100, 100);
+      return `<div class="principle-card">
+        <div class="principle-icon">${info.icon}</div>
+        <div class="principle-name">${info.label}</div>
+        <div class="principle-count">${count}</div>
+        <div class="principle-sub">servings logged</div>
+        <div class="principle-bar-wrap">
+          <div class="principle-bar" style="width:${pct}%"></div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  // Calendar
+  const cal = document.getElementById('calendarGrid');
+  if (cal) {
+    cal.innerHTML = DAYS.map((day, i) => {
+      const dayData = data[day] || {};
+      const meals = MEAL_PLAN[day].meals;
+      const dots = meals.map((_, mi) => {
+        const s = dayData[`meal_${mi}`] || 'none';
+        return `<div class="cal-dot ${s === 'none' ? '' : s}"></div>`;
+      }).join('');
+      return `<div class="cal-day ${i === currentDayIndex ? 'active-day' : ''}" onclick="switchDay(${i}); showPage('plan');">
+        <div class="cd-name">${DAY_SHORT[i]}</div>
+        <div class="cd-dots">${dots}</div>
+      </div>`;
+    }).join('');
+  }
+
+  // Notes list
+  const notesList = document.getElementById('notesList');
+  if (notesList) {
+    const noteItems = DAYS.filter(day => (data[day] || {}).note).map(day => {
+      const note = (data[day] || {}).note;
+      const dayData = data[day] || {};
+      const meals = MEAL_PLAN[day].meals;
+      const eaten = meals.filter((_, mi) => dayData[`meal_${mi}`] === 'eaten').length;
+      const total = meals.length;
+      return `<div class="history-item">
+        <div class="history-date">${day}</div>
+        <div class="history-stats">${eaten}/${total} meals eaten</div>
+        <div class="history-note">${note}</div>
+      </div>`;
+    });
+    notesList.innerHTML = noteItems.length
+      ? noteItems.join('')
+      : `<div class="empty-state"><div class="empty-icon">📝</div><p>No notes yet.<br>Add notes on the Plan tab!</p></div>`;
+  }
+}
+
+function getStreak() {
+  // Count consecutive days with at least 1 meal eaten
+  let streak = 0;
+  const data = getWeekData();
+  for (let i = currentDayIndex; i >= 0; i--) {
+    const day = DAYS[i];
+    const dayData = data[day] || {};
+    const hasAny = MEAL_PLAN[day].meals.some((_, mi) => dayData[`meal_${mi}`] === 'eaten' || dayData[`meal_${mi}`] === 'subbed');
+    if (hasAny) streak++;
+    else break;
+  }
+  return streak;
+}
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+function showPage(page) {
+  currentPage = page;
+  document.getElementById('pagePlan').classList.toggle('active', page === 'plan');
+  document.getElementById('pageProgress').classList.toggle('active', page === 'progress');
+  document.getElementById('navPlan').classList.toggle('active', page === 'plan');
+  document.getElementById('navProgress').classList.toggle('active', page === 'progress');
+  if (page === 'progress') renderProgress();
+  if (page === 'plan') renderDayContent();
+}
+
+// ============================================================
+// TOAST
+// ============================================================
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+// ============================================================
+// CLOSE MODAL ON OVERLAY CLICK
+// ============================================================
+document.getElementById('subModal').addEventListener('click', function(e) {
+  if (e.target === this) closeSubModal();
+});
+
+// ============================================================
+// START
+// ============================================================
+init();
+</script>
+</body>
+</html>
