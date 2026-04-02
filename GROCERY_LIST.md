@@ -85,13 +85,12 @@
 - [ ] Whole grain pasta (½ cup dry)
 - [ ] Whole grain bread (1 loaf)
 
-### Legumes (Dried or Canned)
-- [ ] Red lentils (1¼ cups dry)
-- [ ] Green/brown lentils (1¼ cups cooked)
+### Legumes (Dried or Canned) - ⚠️ NO LENTILS OR PEAS (ALLERGEN)
 - [ ] Black beans (1¼ cups)
-- [ ] White beans/cannellini (4+ cups total)
-- [ ] Chickpeas (2½ cups total)
-- [ ] Split peas (1¼ cups dry)
+- [ ] White beans/cannellini (5+ cups total)
+- [ ] Navy beans (1¼ cups)
+- [ ] Kidney beans (1¼ cups)
+- [ ] Chickpeas (1¼ cups total)
 
 ---
 
